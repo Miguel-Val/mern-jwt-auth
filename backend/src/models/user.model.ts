@@ -41,3 +41,7 @@ userSchema.pre("save", async function (next) {
 userSchema.methods.comparePassword = async function (val: string) {
     return await compareValue(val, this.password);
 };
+
+const UserModel = mongoose.model<UserDocument>("User", userSchema);
+
+export default UserModel;
