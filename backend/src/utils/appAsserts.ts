@@ -1,6 +1,6 @@
 import AppErrorCode from "../constants/appErrorCode";
 import { HttpStatusCode } from "../constants/http";
-import AppError from "./AppError";
+import AppError from "./appError";
 import assert from "node:assert";
 
 type AppAsserts = (
