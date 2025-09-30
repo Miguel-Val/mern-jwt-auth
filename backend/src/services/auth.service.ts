@@ -3,9 +3,10 @@ import UserModel from "../models/user.model";
 import VerificationCodeModel from "../models/verificationCode.model";
 import { oneYearFromNow, ONE_DAY_MS, thirtyDaysFromNow } from "../utils/date";
 import jwt from "jsonwebtoken";
-import { JWT_REFRESH_SECRET, JWT_SECRET } from "../constants/env";
+import { JWT_REFRESH_SECRET, JWT_SECRET, APP_ORIGIN } from "../constants/env";
 import SessionModel from "../models/session.model";
 import appAsserts from "../utils/appAsserts";
+import { getVerifyEmailTemplate } from "../utils/emailTemplates";
 import {
     CONFLICT,
     INTERNAL_SERVER_ERROR,
@@ -18,6 +19,7 @@ import {
     signToken,
     verifyToken,
 } from "../utils/jwt";
+import { sendMail } from "../utils/sendMail";
 
 export type CreatAccountParams = {
     email: string;
@@ -51,7 +53,17 @@ export const createAccount = async (data: CreatAccountParams) => {
         expiresAt: oneYearFromNow(),
     });
 
+    const url = `${APP_ORIGIN}/email/verify/${verificationCode._id}`;
+
     // send verification email
+    try {
+        await sendMail({
+            to: user.email,
+            ...getVerifyEmailTemplate(url),
+        });
+    } catch (error) {
+        console.log(error);
+    }
 
     // create session
     const session = await SessionModel.create({
