@@ -1,5 +1,9 @@
 import { CREATED, OK } from "../constants/http";
-import { createAccount, loginUser } from "../services/auth.service";
+import {
+    createAccount,
+    loginUser,
+    verifyEmail,
+} from "../services/auth.service";
 import catchErrors from "../utils/catchErrors";
 import {
     clearAuthCookies,
@@ -7,7 +11,11 @@ import {
     setAuthCookies,
 } from "../utils/cookies";
 import { z } from "zod";
-import { registerSchema, loginSchema } from "./auth.schemas";
+import {
+    registerSchema,
+    loginSchema,
+    verificationCodeSchema,
+} from "./auth.schemas";
 import { verifyToken } from "../utils/jwt";
 import SessionModel from "../models/session.model";
 import { UNAUTHORIZED } from "../constants/http";
@@ -81,4 +89,14 @@ export const refreshHandler = catchErrors(async (req, res) => {
         .json({
             message: "Access token refreshed",
         });
+});
+
+export const verifyEmailHandler = catchErrors(async (req, res) => {
+    const verificationCode = verificationCodeSchema.parse(req.params.code);
+
+    await verifyEmail(verificationCode);
+
+    return res.status(OK).json({
+        message: "Email was verified successfully",
+    });
 });

@@ -6,7 +6,12 @@ import jwt from "jsonwebtoken";
 import { JWT_REFRESH_SECRET, JWT_SECRET } from "../constants/env";
 import SessionModel from "../models/session.model";
 import appAsserts from "../utils/appAsserts";
-import { CONFLICT, UNAUTHORIZED } from "../constants/http";
+import {
+    CONFLICT,
+    INTERNAL_SERVER_ERROR,
+    NOT_FOUND,
+    UNAUTHORIZED,
+} from "../constants/http";
 import {
     accessTokenSignOptions,
     refreshTokenSignOptions,
@@ -155,5 +160,31 @@ export const refreshUserAccessToken = async (refreshToken: string) => {
     return {
         accessToken,
         newRefreshToken,
+    };
+};
+
+export const verifyEmail = async (code: string) => {
+    // get the verification code
+    const validCode = await VerificationCodeModel.findOne({
+        _id: code,
+        type: VerificationCodeType.EmailVerification,
+        expiresAt: { $gt: new Date() },
+    });
+    appAsserts(validCode, NOT_FOUND, "Invalid verification code");
+
+    //update user verified to true
+    const updatedUser = await UserModel.findByIdAndUpdate(
+        validCode.userId,
+        { verified: true },
+        { new: true }
+    );
+    appAsserts(updatedUser, INTERNAL_SERVER_ERROR, "Failed to verify email");
+
+    //delete verification code
+    await validCode.deleteOne();
+
+    //return user
+    return {
+        user: updatedUser.omitPassword(),
     };
 };
