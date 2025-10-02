@@ -8,6 +8,9 @@ import { APP_ORIGIN } from "./constants/env";
 import errorHandler from "./middleware/errorHandler";
 import { OK } from "./constants/http";
 import authRoutes from "./routes/auth.route";
+import authenticate from "./middleware/authenticate";
+import userRoutes from "./routes/user.route";
+import sessionRoutes from "./routes/session.route";
 
 const app = express();
 
@@ -21,14 +24,18 @@ app.use(
     })
 );
 
-app.get("/", (req, res, next) => {
-    throw new Error("Test error");
+app.get("/", (_, res) => {
     res.status(OK).json({
         status: "Healthy",
     });
 });
 
+// auth routes
 app.use("/auth", authRoutes);
+
+// protected routes
+app.use("/user", authenticate, userRoutes);
+app.use("/sessions", authenticate, sessionRoutes);
 
 app.use(errorHandler);
 
