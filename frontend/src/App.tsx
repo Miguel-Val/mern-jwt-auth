@@ -5,6 +5,8 @@ import VerifyEmail from "./pages/VerifyEmail";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import AppContainer from "./components/AppContainer";
+import Profile from "./pages/Profile";
+import Settings from "./pages/Settings";
 
 export const Home = () => {
     return <div>sfdsdfdsfsdfHome</div>;
@@ -14,7 +16,8 @@ function App() {
     return (
         <Routes>
             <Route path="/" element={<AppContainer />}>
-                <Route index element={<Home />} />
+                <Route index element={<Profile />} />
+                <Route path="/settings" element={<Settings />} />
             </Route>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
