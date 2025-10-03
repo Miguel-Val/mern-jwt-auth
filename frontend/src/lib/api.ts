@@ -17,6 +17,7 @@ interface ResetPasswordData {
 }
 
 export const login = async (data: LoginData) => API.post("/auth/login", data);
+export const logout = async () => API.get("/auth/logout");
 export const register = async (data: RegisterData) =>
     API.post("/auth/register", data);
 export const verifyEmail = async (code: string) =>
@@ -29,7 +30,6 @@ export const resetPassword = async ({
     password,
 }: ResetPasswordData) =>
     API.post("/auth/password/reset", { verificationCode, password });
-
-// export const getUser = async () => API.get("/user");
+export const getUser = async () => API.get("/user");
 // export const getSessions = async () => API.get("/sessions");
 // export const deleteSession = async (id) => API.delete(`/sessions/${id}`);
