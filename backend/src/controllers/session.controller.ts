@@ -1,7 +1,7 @@
 import z from "zod";
 import { NOT_FOUND, OK } from "../constants/http";
 import SessionModel from "../models/session.model";
-import appAsserts from "../utils/appAsserts";
+import appAssert from "../utils/appAssert";
 import catchErrors from "../utils/catchErrors";
 
 export const getSessionsHandler = catchErrors(async (req, res) => {
@@ -24,6 +24,6 @@ export const deleteSessionHandler = catchErrors(async (req, res) => {
         _id: sessionId,
         userId: req.userId,
     });
-    appAsserts(deletedSession, NOT_FOUND, "Session not found");
+    appAssert(deletedSession, NOT_FOUND, "Session not found");
     return res.status(OK).json({ message: "Session removed" });
 });

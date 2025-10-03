@@ -3,20 +3,20 @@ import { HttpStatusCode } from "../constants/http";
 import AppError from "./appError";
 import assert from "node:assert";
 
-type AppAsserts = (
+type AppAssert = (
     condition: any,
     httpStatusCode: HttpStatusCode,
     message: string,
     appErrorCode?: AppErrorCode
 ) => asserts condition;
 
-// Asserts a condition and throws an AppError if the condition is falsy
+// Assert a condition and throws an AppError if the condition is falsy
 
-const appAsserts: AppAsserts = (
+const appAssert: AppAssert = (
     condition: any,
     httpStatusCode,
     message: string,
     appErrorCode
 ) => assert(condition, new AppError(message, httpStatusCode, appErrorCode));
 
-export default appAsserts;
+export default appAssert;

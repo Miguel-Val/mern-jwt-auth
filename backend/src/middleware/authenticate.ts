@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import appAsserts from "../utils/appAsserts";
+import appAssert from "../utils/appAssert";
 import AppErrorCode from "../constants/appErrorCode";
 import { UNAUTHORIZED } from "../constants/http";
 import { verifyToken } from "../utils/jwt";
@@ -8,7 +8,7 @@ import mongoose from "mongoose";
 // wrap with catchErrors() if you need this to be async
 const authenticate: RequestHandler = (req, res, next) => {
     const accessToken = req.cookies.accessToken as string | undefined;
-    appAsserts(
+    appAssert(
         accessToken,
         UNAUTHORIZED,
         "Not authorized",
@@ -16,7 +16,7 @@ const authenticate: RequestHandler = (req, res, next) => {
     );
 
     const { error, payload } = verifyToken(accessToken);
-    appAsserts(
+    appAssert(
         payload,
         UNAUTHORIZED,
         error === "jwt expired" ? "Token expired" : "Invalid token",
